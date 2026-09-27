@@ -10,6 +10,9 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 
+// Lab 04 — Wishlist
+import Wishlist from "./pages/Wishlist";
+
 import "./App.css";
 
 function App() {
@@ -24,6 +27,9 @@ function App() {
         {/* Product catalog routes (Lab 03) */}
         <Route path="/products"     element={<Products />} />
         <Route path="/products/:id" element={<ProductDetails />} />
+
+        {/* Wishlist route (Lab 04) */}
+        <Route path="/wishlist" element={<Wishlist />} />
 
         {/* Fallback */}
         <Route path="/"  element={<Navigate to="/login" replace />} />

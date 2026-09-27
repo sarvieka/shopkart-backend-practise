@@ -1,11 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../services/api";
 
-const Navbar = () => {
+const Navbar = ({ wishlistCount: propCount }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
+
+  // Fetch wishlist count on mount (unless provided via props from Wishlist page)
+  useEffect(() => {
+    if (propCount !== undefined) {
+      setWishlistCount(propCount);
+      return;
+    }
+
+    const fetchCount = async () => {
+      try {
+        const response = await api.get("/wishlist");
+        setWishlistCount(response.data.count || 0);
+      } catch {
+        // Silently fail — count is a bonus feature
+        setWishlistCount(0);
+      }
+    };
+
+    fetchCount();
+  }, [propCount]);
 
   const handleLogout = async () => {
     try {
@@ -34,6 +55,13 @@ const Navbar = () => {
         onClick={() => setMobileOpen(false)}
       >
         Products
+      </Link>
+      <Link
+        to="/wishlist"
+        className={`nav-link ${isActive("/wishlist") ? "active" : ""}`}
+        onClick={() => setMobileOpen(false)}
+      >
+        Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ""}
       </Link>
       <div className="nav-separator" />
       <button onClick={() => { handleLogout(); setMobileOpen(false); }} className="logout-btn">
