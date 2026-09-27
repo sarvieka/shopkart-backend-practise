@@ -1,3 +1,5 @@
+
+
 const express = require("express");
 
 const {
@@ -14,7 +16,17 @@ const router = express.Router();
 router.post("/register", registerCustomer);
 router.post("/login", loginCustomer);
 router.get("/me", authMiddleware, getMyProfile);
-router.post("/logout", authMiddleware, logoutCustomer);
+router.post("/logout", logoutCustomer);
 
-module.exports = router; 
 
+router.get("/hi", function(req, res){
+
+    res.json({
+
+        message: "hi sarvika"
+
+    })
+});
+
+
+module.exports = router;

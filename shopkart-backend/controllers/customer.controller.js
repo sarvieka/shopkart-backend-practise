@@ -91,13 +91,14 @@ const loginCustomer = async (req, res) => {
         // create a JWT token for the customer, which will be used for authentication in subsequent requests. The token contains the customer's ID and is signed with a secret key. It also has an expiration time of 1 hour.
         const token = jwt.sign(
             {
-                customerId: customer._id
+                customerId: customer._id // <--- THIS OBJECT IS YOUR PAYLOAD
             },
             process.env.JWT_SECRET,
             {
-                expiresIn: "1h"
+                expiresIn: "1h" // <--- This adds the "exp" claim to your payload
             }
         );
+
 
         // Putting it into an HttpOnly cookie
 // "token -> cookie name , 'token' -> cookie value, httpOnly: true -> cookie cannot be accessed via client-side JavaScript, secure: false -> cookie can be sent over non-HTTPS connections (for development purposes)."

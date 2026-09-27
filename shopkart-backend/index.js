@@ -6,6 +6,8 @@ const cors = require("cors");
 
 // import routes
 const customerRoutes = require("./routes/customer.routes");
+const productRoutes = require("./routes/product.routes");
+const wishlistRoutes = require("./routes/wishlist.routes");
 
 require("dotenv").config();
 
@@ -23,6 +25,8 @@ app.use(cookieParser());
 
 // Routes
 app.use("/customers", customerRoutes);
+app.use("/products", productRoutes);
+app.use("/wishlist", wishlistRoutes);
 
 // MongoDB Connection
 mongoose

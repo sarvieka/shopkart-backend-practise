@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
+/**
+ * Register Page
+ *
+ * Fields: fullName, email, password, phone
+ * Submits: POST /customers/register
+ * On success: navigate to /login
+ * On error: display server message
+ */
 const Register = () => {
   const navigate = useNavigate();
 
@@ -27,7 +35,12 @@ const Register = () => {
     e.preventDefault();
 
     // Client-side validation
-    if (!formData.fullName.trim() || !formData.email.trim() || !formData.password || !formData.phone.trim()) {
+    if (
+      !formData.fullName.trim() ||
+      !formData.email.trim() ||
+      !formData.password ||
+      !formData.phone.trim()
+    ) {
       setError("Please fill in all fields.");
       return;
     }
@@ -51,7 +64,10 @@ const Register = () => {
       // On successful registration navigate to /login
       navigate("/login");
     } catch (err) {
-      const serverMessage = err.response?.data?.message || err.response?.data?.error || "Registration failed. Please try again.";
+      const serverMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Registration failed. Please try again.";
       setError(serverMessage);
     } finally {
       setLoading(false);
@@ -59,15 +75,19 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-page">
+      {/* Logo mark */}
+      <div className="auth-logo">
+        <p className="auth-logo-name">ShopKart</p>
+        <p className="auth-logo-sub">Commerce Platform</p>
+      </div>
+
+      {/* Card */}
       <div className="auth-card">
         <div className="auth-header">
-          <div className="brand">
-            <span className="brand-icon">🛒</span>
-            <h2>ShopKart</h2>
-          </div>
-          <h3>Create an Account</h3>
-          <p>Join ShopKart to start shopping today</p>
+          <p className="auth-eyebrow">New Account</p>
+          <h1>Create Account</h1>
+          <p>Join ShopKart to start browsing our catalog.</p>
         </div>
 
         {error && <div className="error-alert">{error}</div>}
@@ -79,7 +99,7 @@ const Register = () => {
               type="text"
               id="fullName"
               name="fullName"
-              placeholder="John Doe"
+              placeholder="Your full name"
               value={formData.fullName}
               onChange={handleChange}
               disabled={loading}
@@ -93,7 +113,7 @@ const Register = () => {
               type="email"
               id="email"
               name="email"
-              placeholder="john@example.com"
+              placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
               disabled={loading}
@@ -107,7 +127,7 @@ const Register = () => {
               type="password"
               id="password"
               name="password"
-              placeholder="••••••••"
+              placeholder="Minimum 6 characters"
               value={formData.password}
               onChange={handleChange}
               disabled={loading}
@@ -121,7 +141,7 @@ const Register = () => {
               type="tel"
               id="phone"
               name="phone"
-              placeholder="1234567890"
+              placeholder="10-digit number"
               value={formData.phone}
               onChange={handleChange}
               disabled={loading}
@@ -130,13 +150,14 @@ const Register = () => {
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Registering..." : "Register"}
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
         <div className="auth-footer">
           <p>
-            Already have an account? <Link to="/login">Sign In</Link>
+            Already have an account?{" "}
+            <Link to="/login">Sign in</Link>
           </p>
         </div>
       </div>

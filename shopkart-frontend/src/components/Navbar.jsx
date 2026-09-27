@@ -1,9 +1,11 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../services/api";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -11,28 +13,68 @@ const Navbar = () => {
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Fallback redirect to login
       navigate("/login");
     }
   };
 
+  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + "/");
+
+  const NavLinks = () => (
+    <>
+      <Link
+        to="/home"
+        className={`nav-link ${isActive("/home") ? "active" : ""}`}
+        onClick={() => setMobileOpen(false)}
+      >
+        Home
+      </Link>
+      <Link
+        to="/products"
+        className={`nav-link ${isActive("/products") ? "active" : ""}`}
+        onClick={() => setMobileOpen(false)}
+      >
+        Products
+      </Link>
+      <div className="nav-separator" />
+      <button onClick={() => { handleLogout(); setMobileOpen(false); }} className="logout-btn">
+        Logout
+      </button>
+    </>
+  );
+
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <Link to="/home" className="navbar-logo">
-          <span className="logo-icon">🛒</span>
-          <span className="logo-text">ShopKart</span>
-        </Link>
-        <div className="navbar-menu">
-          <Link to="/home" className="nav-link">
-            Home
+    <>
+      <nav className="navbar">
+        <div className="navbar-container">
+          {/* Brand */}
+          <Link to="/home" className="navbar-brand">
+            <span className="navbar-brand-name">ShopKart</span>
+            <span className="navbar-brand-sub">Commerce</span>
           </Link>
-          <button onClick={handleLogout} className="logout-btn">
-            Logout
+
+          {/* Desktop nav */}
+          <div className="navbar-menu">
+            <NavLinks />
+          </div>
+
+          {/* Mobile toggle */}
+          <button
+            className="nav-mobile-toggle"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle navigation"
+          >
+            <span />
+            <span />
+            <span />
           </button>
         </div>
+      </nav>
+
+      {/* Mobile menu */}
+      <div className={`nav-mobile-menu ${mobileOpen ? "open" : ""}`}>
+        <NavLinks />
       </div>
-    </nav>
+    </>
   );
 };
 

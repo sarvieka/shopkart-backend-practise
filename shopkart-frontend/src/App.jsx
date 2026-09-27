@@ -1,19 +1,33 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Register from "./pages/Register";
+
+// Lab 02 — Authentication pages
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Home from "./pages/Home";
+
+// Lab 03 — Product catalog pages
+import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
+
 import "./App.css";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Auth routes (Lab 02) */}
+        <Route path="/login"    element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/home"     element={<Home />} />
+
+        {/* Product catalog routes (Lab 03) */}
+        <Route path="/products"     element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+
+        {/* Fallback */}
+        <Route path="/"  element={<Navigate to="/login" replace />} />
+        <Route path="*"  element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

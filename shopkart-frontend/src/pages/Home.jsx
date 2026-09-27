@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
 
+/**
+ * Home Page
+ *
+ * On mount, calls GET /customers/me to verify authentication
+ * and retrieve the real customer profile.
+ * If the response is 401 Unauthorized, redirects to /login.
+ *
+ * Displays real customer data: fullName, email, phone.
+ * Includes a CTA to navigate to /products.
+ */
 const Home = () => {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState(null);
@@ -15,7 +25,7 @@ const Home = () => {
         setCustomer(response.data.customer);
       } catch (error) {
         console.error("Failed to fetch customer profile:", error);
-        // If /customers/me returns 401 Unauthorized or any auth error, redirect to /login
+        // Any error (including 401 Unauthorized) → redirect to /login
         navigate("/login");
       } finally {
         setLoading(false);
@@ -25,59 +35,70 @@ const Home = () => {
     fetchCustomerProfile();
   }, [navigate]);
 
+  // ── Loading state ──────────────────────────────────────────
   if (loading) {
     return (
       <div className="home-page">
         <Navbar />
         <div className="loading-container">
-          <div className="spinner"></div>
+          <div className="spinner" />
           <p>Loading your profile...</p>
         </div>
       </div>
     );
   }
 
+  // ── Authenticated ─────────────────────────────────────────
   return (
     <div className="home-page">
       <Navbar />
       <main className="home-container">
-        <div className="welcome-banner">
-          <h1>Welcome, {customer?.fullName}!</h1>
-          <p>You have successfully logged in to your ShopKart account.</p>
-        </div>
 
-        <div className="profile-card">
-          <div className="profile-header">
-            <div className="avatar">
-              {customer?.fullName ? customer.fullName.charAt(0).toUpperCase() : "U"}
-            </div>
-            <div>
-              <h2>{customer?.fullName}</h2>
-              <span className="badge">Customer Account</span>
-            </div>
-          </div>
+        {/* Welcome section */}
+        <section className="home-welcome">
+          <p className="home-eyebrow">ShopKart — Customer Account</p>
+          <h1>
+            Welcome back,{" "}
+            <strong>{customer?.fullName}</strong>.
+          </h1>
+          <p className="home-welcome-sub">
+            You are signed in to your ShopKart account. Browse the product
+            catalog to find what you need.
+          </p>
+        </section>
 
+        {/* Profile details */}
+        <section>
+          <p className="home-profile-title">Account Details</p>
           <div className="profile-details">
             <div className="detail-item">
-              <span className="detail-label">Full Name</span>
-              <span className="detail-value">{customer?.fullName}</span>
+              <p className="detail-label">Full Name</p>
+              <p className="detail-value">{customer?.fullName}</p>
             </div>
             <div className="detail-item">
-              <span className="detail-label">Email Address</span>
-              <span className="detail-value">{customer?.email}</span>
+              <p className="detail-label">Email Address</p>
+              <p className="detail-value">{customer?.email}</p>
             </div>
             <div className="detail-item">
-              <span className="detail-label">Phone Number</span>
-              <span className="detail-value">{customer?.phone}</span>
+              <p className="detail-label">Phone Number</p>
+              <p className="detail-value">{customer?.phone}</p>
             </div>
             {customer?.id && (
               <div className="detail-item">
-                <span className="detail-label">Customer ID</span>
-                <span className="detail-value code-font">{customer.id}</span>
+                <p className="detail-label">Customer ID</p>
+                <p className="detail-value code-font">{customer.id}</p>
               </div>
             )}
           </div>
+        </section>
+
+        {/* CTA */}
+        <div className="home-cta">
+          <Link to="/products" className="btn-primary">
+            Explore Product Catalog
+          </Link>
         </div>
+
       </main>
     </div>
   );

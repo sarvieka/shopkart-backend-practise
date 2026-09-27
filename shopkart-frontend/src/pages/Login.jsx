@@ -2,6 +2,17 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
+/**
+ * Login Page
+ *
+ * Fields: email, password
+ * Submits: POST /customers/login
+ * On success: backend sets HttpOnly "token" cookie; navigate to /home
+ * On error: display server message
+ *
+ * JWT is NEVER stored in localStorage/sessionStorage/React state.
+ * The HttpOnly cookie is managed entirely by the browser.
+ */
 const Login = () => {
   const navigate = useNavigate();
 
@@ -42,7 +53,10 @@ const Login = () => {
       // On successful login navigate to /home
       navigate("/home");
     } catch (err) {
-      const serverMessage = err.response?.data?.message || err.response?.data?.error || "Invalid Credentials";
+      const serverMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Invalid credentials. Please try again.";
       setError(serverMessage);
     } finally {
       setLoading(false);
@@ -50,15 +64,19 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-page">
+      {/* Logo mark */}
+      <div className="auth-logo">
+        <p className="auth-logo-name">ShopKart</p>
+        <p className="auth-logo-sub">Commerce Platform</p>
+      </div>
+
+      {/* Card */}
       <div className="auth-card">
         <div className="auth-header">
-          <div className="brand">
-            <span className="brand-icon">🛒</span>
-            <h2>ShopKart</h2>
-          </div>
-          <h3>Welcome Back</h3>
-          <p>Sign in to your ShopKart account</p>
+          <p className="auth-eyebrow">Customer Portal</p>
+          <h1>Sign In</h1>
+          <p>Enter your credentials to access your account.</p>
         </div>
 
         {error && <div className="error-alert">{error}</div>}
@@ -70,7 +88,7 @@ const Login = () => {
               type="email"
               id="email"
               name="email"
-              placeholder="john@example.com"
+              placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
               disabled={loading}
@@ -93,13 +111,14 @@ const Login = () => {
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Signing in..." : "Login"}
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
         <div className="auth-footer">
           <p>
-            Don't have an account? <Link to="/register">Register</Link>
+            Don&apos;t have an account?{" "}
+            <Link to="/register">Create account</Link>
           </p>
         </div>
       </div>
